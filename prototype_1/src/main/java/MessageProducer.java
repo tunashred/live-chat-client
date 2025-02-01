@@ -17,24 +17,15 @@ public class MessageProducer {
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
 
-        File good_messages_file = new File("input_messages/good_messages.txt");
+        File good_messages_file = new File("input_messages/bad_messages.txt");
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(good_messages_file));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", "69", line);
-
-                final String line_2 = line;
-                producer.send(record, ((recordMetadata, e) -> {
-                    if (e == null) {
-                        System.out.println("Send message: " + line_2);
-                    } else {
-                        e.printStackTrace();
-                    }
-                }));
+                producer.send(record);
+                System.out.println("Send message: " + line);
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
