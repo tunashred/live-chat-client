@@ -48,10 +48,9 @@ public class ModeratorProducerConsumer {
                     System.out.printf("\nUser ID: %s\nOriginal message: %s\nProcessed message: %s\n", record.key(), record.value(), processedMessage.getProcessedMessage());
 
                     if (processedMessage.isCensored()) {
-                        producer.send(new ProducerRecord<>("flagged_messages", record.key(), processedMessage.getProcessedMessage()));
-                    } else {
-                        producer.send(new ProducerRecord<>("safe_chat", record.key(), processedMessage.getProcessedMessage()));
+                        producer.send(new ProducerRecord<>("flagged_messages", record.key(), record.value()));
                     }
+                    producer.send(new ProducerRecord<>("safe_chat", record.key(), processedMessage.getProcessedMessage()));
                 }
                 Thread.sleep(500);
             }
