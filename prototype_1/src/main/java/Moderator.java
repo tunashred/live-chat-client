@@ -2,39 +2,45 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.ahocorasick.trie.Emit;
+import org.ahocorasick.trie.Trie;
 
 public class Moderator {
-    private Set<String> bannedWords;
+    private Trie bannedWords;
 
     public Moderator(String file_path) {
-        bannedWords = new HashSet<>();
-        loadBadWords(file_path);
-    }
-
-    private void loadBadWords(String file) {
+        Trie.TrieBuilder trieBuilder = Trie.builder().ignoreCase();
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file_path));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                bannedWords.add(line.trim().toLowerCase());
+                trieBuilder.addKeyword(line.trim().toLowerCase());
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        this.bannedWords = trieBuilder.build();
     }
 
-    public String censor(String message) {
-        String[] words = message.split(" ");
-        for (int i = 0; i < words.length; i++) {
-            String lowercaseWord = words[i].replaceAll("[^a-zA-Z_]", "").toLowerCase();
-            if (bannedWords.contains(lowercaseWord)) {
-                words[i] = "*".repeat(lowercaseWord.length());
-            }
+    public ProcessedMessage censor(String message) {
+        StringBuilder censoredMessage = new StringBuilder(message);
+        boolean isCensored = false;
+
+        for (Emit emit : bannedWords.parseText(message)) {
+            int start = emit.getStart(), end = emit.getEnd();
+            String replacement = "*".repeat(emit.getKeyword().length());
+            censoredMessage.replace(start, end + 1, replacement);
+            isCensored = true;
         }
-        return String.join(" ", words);
+        return new ProcessedMessage(censoredMessage.toString(), isCensored);
+    }
+
+    public static void main(String[] args) {
+        Moderator moderator = new Moderator("packs/banned.txt");
+        ProcessedMessage output = moderator.censor("Ohhh, damn you, you little sh1t..");
+        System.out.println(output.getProcessedMessage());
     }
 }

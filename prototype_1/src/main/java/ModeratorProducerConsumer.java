@@ -44,10 +44,14 @@ public class ModeratorProducerConsumer {
             while (true) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : consumerRecords) {
-                    String processedMessage = moderator.censor(record.value());
-                    System.out.printf("\nUser ID: %s\nOriginal message: %s\nProcessed message: %s\n", record.key(), record.value(), processedMessage);
+                    ProcessedMessage processedMessage = moderator.censor(record.value());
+                    System.out.printf("\nUser ID: %s\nOriginal message: %s\nProcessed message: %s\n", record.key(), record.value(), processedMessage.getProcessedMessage());
 
-                    producer.send(new ProducerRecord<>("safe_chat", record.key(), processedMessage));
+                    if (processedMessage.isCensored()) {
+                        producer.send(new ProducerRecord<>("flagged_messages", record.key(), processedMessage.getProcessedMessage()));
+                    } else {
+                        producer.send(new ProducerRecord<>("safe_chat", record.key(), processedMessage.getProcessedMessage()));
+                    }
                 }
                 Thread.sleep(500);
             }
