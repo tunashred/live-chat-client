@@ -17,8 +17,6 @@ public class Moderator {
             while ((line = bufferedReader.readLine()) != null) {
                 trieBuilder.addKeyword(line.trim().toLowerCase());
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,11 +34,5 @@ public class Moderator {
             isCensored = true;
         }
         return new ProcessedMessage(censoredMessage.toString(), isCensored);
-    }
-
-    public static void main(String[] args) {
-        Moderator moderator = new Moderator("packs/banned.txt");
-        ProcessedMessage output = moderator.censor("Ohhh, damn you, you little sh1t..");
-        System.out.println(output.getProcessedMessage());
     }
 }
