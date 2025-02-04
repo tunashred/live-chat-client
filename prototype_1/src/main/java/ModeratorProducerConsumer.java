@@ -1,21 +1,21 @@
-import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-
-import static org.apache.kafka.clients.producer.ProducerConfig.*;
-import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
-
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+
+import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
+import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.*;
 
 public class ModeratorProducerConsumer {
     public static void main(String[] args) {
@@ -39,22 +39,26 @@ public class ModeratorProducerConsumer {
         KafkaProducer<String, String> producer = new KafkaProducer<>(producerProps);
 
         Moderator moderator = new Moderator("packs/banned.txt");
+        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             while (true) {
                 ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : consumerRecords) {
-                    ProcessedMessage processedMessage = moderator.censor(record.value());
-                    System.out.printf("\nUser ID: %s\nOriginal message: %s\nProcessed message: %s\n", record.key(), record.value(), processedMessage.getProcessedMessage());
+                    MessageInfo messageInfo = objectMapper.readValue(record.value(), MessageInfo.class);
+
+                    ProcessedMessage processedMessage = moderator.censor(messageInfo);
+                    System.out.println("\nGroup chat: " + messageInfo.getGroupChat().getChatName() + "/" + messageInfo.getGroupChat().getChatID() +
+                            "\nUser: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
+                            "\nOriginal message: " + messageInfo.getMessage() + "\nProcessed message: " + processedMessage.getProcessedMessage());
 
                     if (processedMessage.isCensored()) {
                         producer.send(new ProducerRecord<>("flagged_messages", record.key(), record.value()));
                     }
                     producer.send(new ProducerRecord<>("safe_chat", record.key(), processedMessage.getProcessedMessage()));
                 }
-                Thread.sleep(500);
             }
-        } catch (InterruptedException e) {
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         } finally {
             consumer.close();

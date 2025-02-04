@@ -1,12 +1,14 @@
-import java.io.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.KafkaProducer;
-
 import static org.apache.kafka.clients.producer.ProducerConfig.*;
-
-import org.apache.kafka.common.serialization.StringSerializer;
 
 public class MessageProducer {
     public static void main(String[] args) {
@@ -17,14 +19,18 @@ public class MessageProducer {
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
 
-        File good_messages_file = new File("input_messages/bad_messages.txt");
+        File messages_file = new File("input_messages/mixed_messages.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<MessageInfo> messages = null;
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(good_messages_file));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", "69", line);
+            messages = objectMapper.readValue(messages_file, objectMapper.getTypeFactory().constructCollectionType(List.class, MessageInfo.class));
+            for (MessageInfo message : messages) {
+                String serialized = objectMapper.writeValueAsString(message);
+                ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", message.getGroupChat().getChatID(), serialized);
+                System.out.println("\nGroup chat: " + message.getGroupChat().getChatName() + "/" + message.getGroupChat().getChatID() +
+                        "\nUser: " + message.getUser().getName() + "/" + message.getUser().getUserID() +
+                        "\nMessage: " + message.getMessage());
                 producer.send(record);
-                System.out.println("Send message: " + line);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -7,6 +7,9 @@ public class GroupChat {
         this.chatID = chatID;
     }
 
+    public GroupChat() {
+    }
+
     public String getChatName() {
         return chatName;
     }

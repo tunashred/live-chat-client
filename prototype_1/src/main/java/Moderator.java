@@ -1,10 +1,9 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
 import org.ahocorasick.trie.Emit;
 import org.ahocorasick.trie.Trie;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Moderator {
     private Trie bannedWords;
@@ -23,7 +22,15 @@ public class Moderator {
         this.bannedWords = trieBuilder.build();
     }
 
-    public ProcessedMessage censor(String message) {
+    public static void main(String[] args) {
+        Moderator moderator = new Moderator("packs/banned.txt");
+        MessageInfo messageInfo = new MessageInfo(null, null, "");
+        ProcessedMessage output = moderator.censor(messageInfo);
+        System.out.println(output.getProcessedMessage());
+    }
+
+    public ProcessedMessage censor(MessageInfo messageInfo) {
+        String message = messageInfo.getMessage();
         StringBuilder censoredMessage = new StringBuilder(message);
         boolean isCensored = false;
 
@@ -33,6 +40,6 @@ public class Moderator {
             censoredMessage.replace(start, end + 1, replacement);
             isCensored = true;
         }
-        return new ProcessedMessage(censoredMessage.toString(), isCensored);
+        return new ProcessedMessage(messageInfo.getGroupChat(), messageInfo.getUser(), messageInfo.getMessage(), censoredMessage.toString(), isCensored);
     }
 }

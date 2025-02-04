@@ -9,6 +9,9 @@ public class MessageInfo {
         this.message = message;
     }
 
+    public MessageInfo() {
+    }
+
     public GroupChat getGroupChat() {
         return groupChat;
     }
