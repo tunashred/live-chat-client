@@ -1,3 +1,8 @@
+package chat.kafka;
+
+import chat.message.MessageInfo;
+import chat.message.ProcessedMessage;
+import chat.moderator.Moderator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -49,13 +54,14 @@ public class ModeratorProducerConsumer {
 
                     ProcessedMessage processedMessage = moderator.censor(messageInfo);
                     System.out.println("\nGroup chat: " + messageInfo.getGroupChat().getChatName() + "/" + messageInfo.getGroupChat().getChatID() +
-                            "\nUser: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
+                            "\nmessage.User: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
                             "\nOriginal message: " + messageInfo.getMessage() + "\nProcessed message: " + processedMessage.getProcessedMessage());
 
                     if (processedMessage.isCensored()) {
                         producer.send(new ProducerRecord<>("flagged_messages", record.key(), record.value()));
                     }
                     producer.send(new ProducerRecord<>("safe_chat", record.key(), processedMessage.getProcessedMessage()));
+                    consumer.commitSync();
                 }
             }
         } catch (JsonProcessingException e) {

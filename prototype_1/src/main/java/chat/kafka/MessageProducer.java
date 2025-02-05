@@ -1,4 +1,7 @@
+package chat.kafka;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import chat.message.MessageInfo;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -28,7 +31,7 @@ public class MessageProducer {
                 String serialized = objectMapper.writeValueAsString(message);
                 ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", message.getGroupChat().getChatID(), serialized);
                 System.out.println("\nGroup chat: " + message.getGroupChat().getChatName() + "/" + message.getGroupChat().getChatID() +
-                        "\nUser: " + message.getUser().getName() + "/" + message.getUser().getUserID() +
+                        "\nmessage.User: " + message.getUser().getName() + "/" + message.getUser().getUserID() +
                         "\nMessage: " + message.getMessage());
                 producer.send(record);
             }

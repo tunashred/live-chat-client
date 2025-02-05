@@ -1,4 +1,9 @@
+package chat.utils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import chat.message.GroupChat;
+import chat.message.MessageInfo;
+import chat.message.User;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +32,7 @@ public class MessageHelperCreator {
             messages.add(messageInfo);
 
             System.out.println("Group chat: " + groupChat.getChatName() + "/" + groupChat.getChatID() +
-                    "\nUser: " + user.getName() + "/" + user.getUserID() +
+                    "\nmessage.User: " + user.getName() + "/" + user.getUserID() +
                     "\nMessage: " + message);
 
         }

@@ -1,3 +1,7 @@
+package chat.moderator;
+
+import chat.message.MessageInfo;
+import chat.message.ProcessedMessage;
 import org.ahocorasick.trie.Emit;
 import org.ahocorasick.trie.Trie;
 

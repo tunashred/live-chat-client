@@ -1,3 +1,5 @@
+package chat.message;
+
 public class User {
     private String name;
     private String userID;

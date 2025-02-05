@@ -1,3 +1,5 @@
+package chat.message;
+
 public class GroupChat {
     private String chatName;
     private String chatID;

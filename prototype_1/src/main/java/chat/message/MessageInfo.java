@@ -1,3 +1,5 @@
+package chat.message;
+
 public class MessageInfo {
     private GroupChat groupChat;
     private User user;

@@ -1,3 +1,5 @@
+package chat.message;
+
 public class ProcessedMessage extends MessageInfo {
     private final String processedMessage;
     private final boolean isCensored;
