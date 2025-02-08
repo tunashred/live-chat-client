@@ -1,7 +1,7 @@
 package chat.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import chat.message.MessageInfo;
+import com.github.tunashred.messageformats.MessageInfo;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;

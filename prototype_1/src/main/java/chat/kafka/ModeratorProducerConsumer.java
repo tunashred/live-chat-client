@@ -1,7 +1,7 @@
 package chat.kafka;
 
-import chat.message.MessageInfo;
-import chat.message.ProcessedMessage;
+import com.github.tunashred.messageformats.MessageInfo;
+import com.github.tunashred.messageformats.ProcessedMessage;
 import chat.moderator.Moderator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,6 +60,7 @@ public class ModeratorProducerConsumer {
                     if (processedMessage.isCensored()) {
                         producer.send(new ProducerRecord<>("flagged_messages", record.key(), record.value()));
                     }
+                    // here should send the thing serialized
                     producer.send(new ProducerRecord<>("safe_chat", record.key(), processedMessage.getProcessedMessage()));
                     consumer.commitSync();
                 }

@@ -1,9 +1,9 @@
 package chat.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import chat.message.GroupChat;
-import chat.message.MessageInfo;
-import chat.message.User;
+import com.github.tunashred.messageformats.GroupChat;
+import com.github.tunashred.messageformats.MessageInfo;
+import com.github.tunashred.messageformats.User;
 
 import java.io.BufferedReader;
 import java.io.File;

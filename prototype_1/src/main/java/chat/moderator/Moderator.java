@@ -1,7 +1,7 @@
 package chat.moderator;
 
-import chat.message.MessageInfo;
-import chat.message.ProcessedMessage;
+import com.github.tunashred.messageformats.MessageInfo;
+import com.github.tunashred.messageformats.ProcessedMessage;
 import org.ahocorasick.trie.Emit;
 import org.ahocorasick.trie.Trie;
 
