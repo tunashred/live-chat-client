@@ -44,6 +44,6 @@ public class Moderator {
             censoredMessage.replace(start, end + 1, replacement);
             isCensored = true;
         }
-        return new ProcessedMessage(messageInfo.getGroupChat(), messageInfo.getUser(), messageInfo.getMessage(), censoredMessage.toString(), isCensored);
+        return new ProcessedMessage(messageInfo, censoredMessage.toString(), isCensored);
     }
 }
