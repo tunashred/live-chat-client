@@ -38,6 +38,5 @@ build/
 .DS_Store
 
 
-
 **/.idea/*
-**/packs/*
+**/input_messages/*

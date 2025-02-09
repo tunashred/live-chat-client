@@ -1,7 +1,7 @@
 package com.github.tunashred.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tunashred.messageformats.MessageInfo;
+import com.github.tunashred.dtos.MessageInfo;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;

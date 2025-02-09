@@ -1,9 +1,9 @@
 package com.github.tunashred.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tunashred.messageformats.GroupChat;
-import com.github.tunashred.messageformats.MessageInfo;
-import com.github.tunashred.messageformats.User;
+import com.github.tunashred.dtos.GroupChat;
+import com.github.tunashred.dtos.MessageInfo;
+import com.github.tunashred.dtos.User;
 
 import java.io.BufferedReader;
 import java.io.File;
