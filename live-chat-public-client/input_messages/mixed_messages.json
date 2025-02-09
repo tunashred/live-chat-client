@@ -1,0 +1,11 @@
+[ {
+  "groupChat" : {
+    "chatName" : "chat_test",
+    "chatID" : "01236969"
+  },
+  "user" : {
+    "name" : "Ionel",
+    "userID" : "189432"
+  },
+  "message" : "god damn you and your dog guys"
+} ]

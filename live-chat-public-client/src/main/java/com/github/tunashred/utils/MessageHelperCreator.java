@@ -1,4 +1,4 @@
-package chat.utils;
+package com.github.tunashred.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tunashred.messageformats.GroupChat;
@@ -39,3 +39,4 @@ public class MessageHelperCreator {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, messages);
     }
 }
+

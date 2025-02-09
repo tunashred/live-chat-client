@@ -1,4 +1,4 @@
-package chat.kafka;
+package com.github.tunashred.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tunashred.messageformats.MessageInfo;
@@ -42,3 +42,4 @@ public class MessageProducer {
         producer.close();
     }
 }
+
