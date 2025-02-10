@@ -1,6 +1,5 @@
 package com.github.tunashred.clients;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tunashred.dtos.GroupChat;
 import com.github.tunashred.dtos.MessageInfo;
 import com.github.tunashred.dtos.User;
@@ -31,13 +30,12 @@ public class ProducerRunnable implements Runnable {
         producerProps.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        ObjectMapper objectMapper = new ObjectMapper();
         while (keepRunnning.get()) {
             try (KafkaProducer<String, String> producer = new KafkaProducer<>(producerProps)) {
                 while (keepRunnning.get()) {
                     try {
                         MessageInfo messageInfo = new MessageInfo(new GroupChat("some group", "6969"), new User("some user", "13018"), reader.readLine());
-                        String serialized = objectMapper.writeValueAsString(messageInfo);
+                        String serialized = MessageInfo.serialize(messageInfo);
 
                         ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", messageInfo.getGroupChat().getChatID(), serialized);
                         producer.send(record);

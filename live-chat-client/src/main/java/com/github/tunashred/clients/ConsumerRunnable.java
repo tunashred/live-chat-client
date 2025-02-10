@@ -1,7 +1,6 @@
 package com.github.tunashred.clients;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tunashred.dtos.MessageInfo;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -33,7 +32,6 @@ public class ConsumerRunnable implements Runnable {
         consumerProps.put(AUTO_OFFSET_RESET_CONFIG, "latest");
         consumerProps.put("acks", "all");
 
-        ObjectMapper objectMapper = new ObjectMapper();
         while (keepRunnning.get()) {
             try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps)) {
                 consumer.subscribe(Collections.singletonList("safe_chat"));
@@ -42,7 +40,7 @@ public class ConsumerRunnable implements Runnable {
                     ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
                     for (var record : consumerRecords) {
                         try {
-                            MessageInfo messageInfo = objectMapper.readValue(record.value(), MessageInfo.class);
+                            MessageInfo messageInfo = MessageInfo.deserialize(record.value());
                             System.out.println("\nGroup chat: " + messageInfo.getGroupChat().getChatName() + "/" + messageInfo.getGroupChat().getChatID() +
                                     "\nmessage.User: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
                                     "\nOriginal message: " + messageInfo.getMessage());
