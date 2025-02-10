@@ -9,4 +9,3 @@ public class KafkaClient {
         producer.start();
     }
 }
-

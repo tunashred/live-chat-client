@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.tunashred</groupId>
-    <artifactId>live-chat-public-client</artifactId>
+    <artifactId>live-chat-client</artifactId>
     <version>1.0-SNAPSHOT</version>
+
 
     <properties>
         <!-- Maven - do not rename - these properties are evaluated by maven, not by something inside this pom file -->

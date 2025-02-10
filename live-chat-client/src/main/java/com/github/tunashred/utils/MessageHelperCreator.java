@@ -39,4 +39,3 @@ public class MessageHelperCreator {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, messages);
     }
 }
-
