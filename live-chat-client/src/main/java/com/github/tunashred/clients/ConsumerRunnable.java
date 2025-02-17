@@ -45,7 +45,7 @@ public class ConsumerRunnable implements Runnable {
                                     "\nmessage.User: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
                                     "\nOriginal message: " + messageInfo.getMessage());
                         } catch (JsonProcessingException e) {
-                            throw new RuntimeException(e);
+                            e.printStackTrace();
                         }
                     }
                     consumer.commitSync();
