@@ -25,7 +25,7 @@ public class MessageHelperCreator {
         List<MessageInfo> messages = new ArrayList<>();
         while (true) {
             String message = reader.readLine();
-            if (Objects.equals(message, "0")) {
+            if ("0".equals(message)) {
                 break;
             }
             MessageInfo messageInfo = new MessageInfo(groupChat, user, message);
