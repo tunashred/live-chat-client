@@ -47,8 +47,8 @@ public class ConsumerRunnable implements Runnable {
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
                         }
-                        consumer.commitSync();
                     }
+                    consumer.commitSync();
                 }
             }
         }
