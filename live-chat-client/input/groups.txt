@@ -1,0 +1,13 @@
+[ {
+  "chatName" : "sup bro",
+  "chatID" : "47618fa284417c57ed0f62236d9a5c03d300fc176320361141c19b2a6c6a137e"
+}, {
+  "chatName" : "weird chat",
+  "chatID" : "c9fde94237a9244fb6c58bdd721e4322b94eedb4dd7a155a797f44820f7851bc"
+}, {
+  "chatName" : "rust devs linux",
+  "chatID" : "5a01bb3d692b729e1f5a96ff6bb7ec455c85e488897ff31e2303ae7be476f2c9"
+}, {
+  "chatName" : "holy c zealots",
+  "chatID" : "dd10fdf6e2758560b8be7ec4aed2948501d753fc661e5e4b368d6b8430931185"
+} ]
