@@ -46,8 +46,7 @@ public class ProducerRunnable implements Runnable {
                     input = reader.readLine();
                     selection = Integer.parseInt(input);
                 }
-                // TODO: ctor with object arg
-                GroupChat chosenGroup = new GroupChat(groups.get(selection).getChatName(), groups.get(selection).getChatID());
+                int choseGroupIndex = selection;
 
                 System.out.println("Please choose your username: ");
                 input = reader.readLine();
@@ -55,7 +54,7 @@ public class ProducerRunnable implements Runnable {
                 User user = new User(input, String.valueOf(input.length()));
                 while (keepRunnning.get()) {
                     try {
-                        MessageInfo messageInfo = new MessageInfo(chosenGroup, user, reader.readLine());
+                        MessageInfo messageInfo = new MessageInfo(groups.get(choseGroupIndex), user, reader.readLine());
                         String serialized = MessageInfo.serialize(messageInfo);
 
                         ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", messageInfo.getGroupChat().getChatID(), serialized);
