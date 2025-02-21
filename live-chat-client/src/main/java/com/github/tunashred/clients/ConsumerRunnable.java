@@ -42,7 +42,7 @@ public class ConsumerRunnable implements Runnable {
                         try {
                             MessageInfo messageInfo = MessageInfo.deserialize(record.value());
                             System.out.println("\nGroup chat: " + messageInfo.getGroupChat().getChatName() + "/" + messageInfo.getGroupChat().getChatID() +
-                                    "\nmessage.User: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
+                                    "\nUser: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
                                     "\nOriginal message: " + messageInfo.getMessage());
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();

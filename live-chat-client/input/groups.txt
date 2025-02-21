@@ -10,4 +10,7 @@
 }, {
   "chatName" : "holy c zealots",
   "chatID" : "dd10fdf6e2758560b8be7ec4aed2948501d753fc661e5e4b368d6b8430931185"
+}, {
+  "chatName" : "anotha group",
+  "chatID" : "63931b9e1d8f0d0958ec8cca6445a2553b5994de75d15c5864fbfd1330afe4b7"
 } ]
