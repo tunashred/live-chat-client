@@ -52,6 +52,9 @@ public class GroupchatCreatorReader {
     }
 
     public static void printGroups(List<GroupChat> groups) {
+        if (groups == null) {
+            return;
+        }
         int i = 0;
         for (var group : groups) {
             System.out.println(i + "." + " Group Name: " + group.getChatName());
