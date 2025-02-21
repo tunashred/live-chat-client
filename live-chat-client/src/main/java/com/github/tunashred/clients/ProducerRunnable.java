@@ -46,15 +46,16 @@ public class ProducerRunnable implements Runnable {
                     input = reader.readLine();
                     selection = Integer.parseInt(input);
                 }
-                int choseGroupIndex = selection;
+                int chosenGroupIndex = selection;
 
                 System.out.println("Please choose your username: ");
                 input = reader.readLine();
-                // TODO: maybe move hashing part to a separate function
-                User user = new User(input, String.valueOf(input.length()));
+                User user = new User(input);
+
+                // start sending messages
                 while (keepRunnning.get()) {
                     try {
-                        MessageInfo messageInfo = new MessageInfo(groups.get(choseGroupIndex), user, reader.readLine());
+                        MessageInfo messageInfo = new MessageInfo(groups.get(chosenGroupIndex), user, reader.readLine());
                         String serialized = MessageInfo.serialize(messageInfo);
 
                         ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", messageInfo.getGroupChat().getChatID(), serialized);

@@ -31,7 +31,7 @@ public class GroupchatCreatorReader {
 
         System.out.print("Enter a group name: ");
         String groupName = reader.readLine();
-        GroupChat group = new GroupChat(groupName, DigestUtils.sha256Hex(groupName));
+        GroupChat group = new GroupChat(groupName);
         groups.add(group);
         System.out.println("Group name: " + groupName + "\nGroup ID: " + group.getChatID());
 
