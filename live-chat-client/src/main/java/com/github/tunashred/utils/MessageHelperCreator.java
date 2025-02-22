@@ -18,8 +18,8 @@ public class MessageHelperCreator {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         ObjectMapper objectMapper = new ObjectMapper();
 
-        GroupChat groupChat = new GroupChat("chat_test", "01236969");
-        User user = new User("Ionel", "189432");
+        GroupChat groupChat = new GroupChat("chat_test");
+        User user = new User("Ionel");
 
         List<MessageInfo> messages = new ArrayList<>();
         while (true) {
