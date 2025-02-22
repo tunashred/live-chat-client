@@ -8,9 +8,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,9 +25,14 @@ public class ProducerRunnable implements Runnable {
     @Override
     public void run() {
         Properties producerProps = new Properties();
-        producerProps.put(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
-        producerProps.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        producerProps.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        try (InputStream propsFile = new FileInputStream("src/main/resources/producer.properties")) {
+            producerProps.load(propsFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // maybe add instead some default properties? but then what is the purpose of using an externalized config
+            // if not for the fewer lines of code in this file?
+            throw new RuntimeException(e.getMessage());
+        }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (keepRunnning.get()) {

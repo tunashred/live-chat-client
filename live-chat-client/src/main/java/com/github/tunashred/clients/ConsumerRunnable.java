@@ -6,6 +6,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -25,13 +28,15 @@ public class ConsumerRunnable implements Runnable {
     @Override
     public void run() {
         Properties consumerProps = new Properties();
-        consumerProps.put(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
-        consumerProps.put(GROUP_ID_CONFIG, "consumer-" + UUID.randomUUID().toString());
-        consumerProps.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerProps.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerProps.put(ENABLE_AUTO_COMMIT_CONFIG, "false");
-        consumerProps.put(AUTO_OFFSET_RESET_CONFIG, "latest");
-        consumerProps.put("acks", "all");
+        try (InputStream propsFile = new FileInputStream("src/main/resources/consumer.properties")) {
+            consumerProps.load(propsFile);
+            consumerProps.put(GROUP_ID_CONFIG, "consumer-" + UUID.randomUUID().toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            // maybe add instead some default properties? but then what is the purpose of using an externalized config
+            // if not for the fewer lines of code in this file?
+            throw new RuntimeException(e.getMessage());
+        }
 
         while (keepRunnning.get()) {
             try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps)) {
