@@ -9,6 +9,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
@@ -25,7 +26,7 @@ public class ConsumerRunnable implements Runnable {
     public void run() {
         Properties consumerProps = new Properties();
         consumerProps.put(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
-        consumerProps.put(GROUP_ID_CONFIG, "moderator-consumer-group");
+        consumerProps.put(GROUP_ID_CONFIG, "consumer-" + UUID.randomUUID().toString());
         consumerProps.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerProps.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerProps.put(ENABLE_AUTO_COMMIT_CONFIG, "false");
