@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tunashred.dtos.MessageInfo;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,11 +14,15 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
-import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 
 public class ConsumerRunnable implements Runnable {
+    private final String groupTopic;
     private AtomicBoolean keepRunnning = new AtomicBoolean(true);
+
+    public ConsumerRunnable(String groupTopic) {
+        this.groupTopic = groupTopic;
+    }
 
     public void stopRunning() {
         keepRunnning.set(false);
@@ -40,7 +43,7 @@ public class ConsumerRunnable implements Runnable {
 
         while (keepRunnning.get()) {
             try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps)) {
-                consumer.subscribe(Collections.singletonList("safe_chat"));
+                consumer.subscribe(Collections.singletonList(groupTopic));
 
                 while (keepRunnning.get()) {
                     ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
