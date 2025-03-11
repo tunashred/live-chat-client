@@ -8,7 +8,6 @@
     <artifactId>live-chat-client</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
     <properties>
         <!-- Maven - do not rename - these properties are evaluated by maven, not by something inside this pom file -->
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
@@ -24,10 +23,12 @@
 
         <lombok.version>1.18.36</lombok.version>
         <kafka.version>3.7.1</kafka.version>
-        <slf4j.version>2.0.12</slf4j.version>
         <ahocorasick.version>0.6.3</ahocorasick.version>
-        <jackson.version>2.14.2</jackson.version>
+        <jackson.version>2.16.1</jackson.version>
         <commonscodec.version>1.15</commonscodec.version>
+        <org.apache.logging.log4j.version>2.24.3</org.apache.logging.log4j.version>
+        <org.sl4j.slf4j-api.version>1.7.36</org.sl4j.slf4j-api.version>
+        <org.fusesource.jansi.version>2.4.0</org.fusesource.jansi.version>
     </properties>
 
     <build>
@@ -74,18 +75,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.ahocorasick</groupId>
             <artifactId>ahocorasick</artifactId>
             <version>${ahocorasick.version}</version>
@@ -110,10 +99,39 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commonscodec.version}</version>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson.version}</version>
+            <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml -->
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${org.apache.logging.log4j.version}</version>
+            <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${org.apache.logging.log4j.version}</version>
+            <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-layout-template-json</artifactId>
+            <version>${org.apache.logging.log4j.version}</version>
+            <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-layout-template-json -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${org.apache.logging.log4j.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

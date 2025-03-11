@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tunashred.dtos.MessageInfo;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 
 public class ConsumerRunnable implements Runnable {
+    private static final Logger logger = LogManager.getLogger(ConsumerRunnable.class);
     private final String groupTopic;
     private AtomicBoolean keepRunnning = new AtomicBoolean(true);
 
@@ -35,26 +38,31 @@ public class ConsumerRunnable implements Runnable {
             consumerProps.load(propsFile);
             consumerProps.put(GROUP_ID_CONFIG, "consumer-" + UUID.randomUUID().toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load kafka streams properties file: ", e);
+            // TODO: should I keep this?
             // maybe add instead some default properties? but then what is the purpose of using an externalized config
             // if not for the fewer lines of code in this file?
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException();
         }
 
+        logger.info("Initializing consumer");
         while (keepRunnning.get()) {
             try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps)) {
                 consumer.subscribe(Collections.singletonList(groupTopic));
+                logger.info("Consumer initialized and subscribed to group topic '" + groupTopic + "'");
 
                 while (keepRunnning.get()) {
                     ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
                     for (var record : consumerRecords) {
                         try {
                             MessageInfo messageInfo = MessageInfo.deserialize(record.value());
-                            System.out.println("\nGroup chat: " + messageInfo.getGroupChat().getChatName() + "/" + messageInfo.getGroupChat().getChatID() +
+                            logger.info("\nGroup chat: " + messageInfo.getGroupChat().getChatName() + "/" + messageInfo.getGroupChat().getChatID() +
                                     "\nUser: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
-                                    "\nOriginal message: " + messageInfo.getMessage());
+                                    "\nMessage: " + messageInfo.getMessage());
+
+                            System.out.println(messageInfo.getUser().getName() + ": " + messageInfo.getMessage());
                         } catch (JsonProcessingException e) {
-                            e.printStackTrace();
+                            logger.warn("Encountered exception while trying to deserialize record: ", e);
                         }
                     }
                     consumer.commitSync();
