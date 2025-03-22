@@ -28,16 +28,12 @@ public class ProducerRunnable implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() throws RuntimeException {
         Properties producerProps = new Properties();
         try (InputStream propsFile = new FileInputStream("src/main/resources/producer.properties")) {
             producerProps.load(propsFile);
         } catch (IOException e) {
-            logger.error("Failed to load kafka streams properties file: ", e);
-            // TODO: should I keep this?
-            // maybe add instead some default properties? but then what is the purpose of using an externalized config
-            // if not for the fewer lines of code in this file?
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -53,13 +49,8 @@ public class ProducerRunnable implements Runnable {
 
                         ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", messageInfo.getGroupChat().getChatID(), serialized);
 
-                        // TODO: rethink logging records here... maybe add a toString inside the dto?
-                        logger.info("New record: Group chat: " + messageInfo.getGroupChat().getChatName() + "/" + messageInfo.getGroupChat().getChatID() +
-                                "User: " + messageInfo.getUser().getName() + "/" + messageInfo.getUser().getUserID() +
-                                "Message: " + messageInfo.getMessage());
-
                         producer.send(record);
-                        logger.info("Record sent");
+                        // TODO low-prio: maybe process the future records when the producer is flushed
                     } catch (IOException e) {
                         logger.warn("Encountered exception while trying to serialize record: ", e);
                     }

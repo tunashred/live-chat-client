@@ -13,6 +13,7 @@ import java.util.List;
 
 public class KafkaClient {
     private static final Logger logger = LogManager.getLogger(KafkaClient.class);
+
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 

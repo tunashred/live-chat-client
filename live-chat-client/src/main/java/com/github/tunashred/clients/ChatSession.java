@@ -7,9 +7,6 @@ public class ChatSession {
     User user;
     GroupChat groupChat;
 
-    ConsumerRunnable consumer;
-    ProducerRunnable producer;
-
     Thread consumerThread;
     Thread producerThread;
 
@@ -17,12 +14,11 @@ public class ChatSession {
         this.user = user;
         this.groupChat = groupChat;
 
-        this.consumer = new ConsumerRunnable(groupChat.getChatName());
-        this.consumerThread = new Thread(this.consumer);
+        // having user id allows multiple users having same name in a common group chat
+        this.consumerThread = new Thread(new ConsumerRunnable(user.getUserID(), groupChat.getChatName()));
         consumerThread.start();
 
-        this.producer = new ProducerRunnable(user, groupChat);
-        this.producerThread = new Thread(this.producer);
+        this.producerThread = new Thread(new ProducerRunnable(user, groupChat));
         producerThread.start();
     }
 }
