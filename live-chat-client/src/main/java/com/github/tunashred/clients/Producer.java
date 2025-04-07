@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Producer {
     private static final Logger logger = LogManager.getLogger(Producer.class);
@@ -44,7 +43,7 @@ public class Producer {
             UserMessage userMessage = new UserMessage(username, message);
             String serialized = UserMessage.serialize(userMessage);
 
-            ProducerRecord<String, String> record = new ProducerRecord<>(channel, channel, serialized);
+            ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", channel, serialized);
 
             kafkaProducer.send(record);
             kafkaProducer.flush();
