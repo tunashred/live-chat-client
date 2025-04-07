@@ -17,17 +17,14 @@ public class Producer {
 
     private KafkaProducer<String, String> kafkaProducer;
 
-    private AtomicBoolean keepRunnning = new AtomicBoolean(true);
-
     public Producer() throws IOException {
         logger.info("Initializing producer");
         Properties producerProps = new Properties();
         try (InputStream propsFile = new FileInputStream("src/main/resources/producer.properties")) {
             producerProps.load(propsFile);
             this.kafkaProducer = new KafkaProducer<>(producerProps);
+            logger.info("Producer ready");
         }
-
-        logger.info("Producer ready");
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -36,14 +33,9 @@ public class Producer {
         String username = "gulie";
         String message = "asta e mesaj cica";
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 2; i++) {
             my_producer.sendMessage(channel, username, message + i + i + i);
-            Thread.sleep(1000);
         }
-    }
-
-    public void stopRunning() {
-        keepRunnning.set(false);
     }
 
     // maybe return a confirmation that the message was really sent successfully?
