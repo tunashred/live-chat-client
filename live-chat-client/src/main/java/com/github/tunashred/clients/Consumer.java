@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tunashred.dtos.UserMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,10 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 
@@ -33,10 +31,9 @@ public class Consumer {
 
             this.consumer = new KafkaConsumer<>(consumerProps);
             consumer.subscribe(Collections.singletonList(channelName));
+            Set<TopicPartition> assignments = this.consumer.assignment();
+            this.consumer.seekToEnd(assignments);
             logger.info("Consumer initialized and subscribed to group topic '" + channelName + "'");
-
-            // warmup poll
-            consumer.poll(Duration.ofMillis(0));
         }
     }
 
