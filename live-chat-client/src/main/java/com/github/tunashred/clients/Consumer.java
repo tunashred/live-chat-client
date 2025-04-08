@@ -1,7 +1,6 @@
 package com.github.tunashred.clients;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.tunashred.dtos.Channel;
 import com.github.tunashred.dtos.UserMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -9,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
@@ -31,7 +29,7 @@ public class Consumer {
         try (InputStream propsFile = new FileInputStream("src/main/resources/consumer.properties")) {
             consumerProps.load(propsFile);
             consumerProps.putAll(properties);
-            consumerProps.put(GROUP_ID_CONFIG, "consumer-" + username); // maybe concatenate channel name too?
+            consumerProps.put(GROUP_ID_CONFIG, username + channelName); // maybe concatenate channel name too?
 
             this.consumer = new KafkaConsumer<>(consumerProps);
             consumer.subscribe(Collections.singletonList(channelName));
@@ -53,13 +51,12 @@ public class Consumer {
         for (UserMessage userMessage : userMessageList) {
             System.out.println(userMessage.getUsername() + ": " + userMessage.getMessage());
         }
-        myConsumer.consumer.close();
     }
 
     public List<UserMessage> consume() throws RuntimeException {
         List<UserMessage> userMessageList = new ArrayList<>();
 
-        ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(4000));
+        ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(300));
         for (var record : consumerRecords) {
             try {
                 UserMessage userMessage = UserMessage.deserialize(record.value());
