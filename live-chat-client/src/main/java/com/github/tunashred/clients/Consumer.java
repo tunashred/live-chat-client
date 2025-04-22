@@ -28,10 +28,10 @@ public class Consumer {
         try (InputStream propsFile = new FileInputStream("src/main/resources/consumer.properties")) {
             consumerProps.load(propsFile);
             consumerProps.putAll(properties);
-            consumerProps.put(GROUP_ID_CONFIG, username + channelName); // maybe concatenate channel name too?
+            consumerProps.put(GROUP_ID_CONFIG, username + channelName);
 
             this.consumer = new KafkaConsumer<>(consumerProps);
-            consumer.subscribe(Collections.singletonList(channelName));
+            this.consumer.subscribe(Collections.singletonList(channelName));
             Set<TopicPartition> assignments = this.consumer.assignment();
             this.consumer.seekToEnd(assignments);
             log.info("Consumer" + "'" + username + "'" + "initialized and subscribed to group topic '" + channelName + "'");
@@ -46,7 +46,7 @@ public class Consumer {
         List<UserMessage> userMessageList = new ArrayList<>();
 
         log.trace("Polling");
-        ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(300));
+        ConsumerRecords<String, String> consumerRecords = this.consumer.poll(Duration.ofMillis(300));
         for (var record : consumerRecords) {
             log.trace("Record to be processed: " + record);
             try {
@@ -57,7 +57,7 @@ public class Consumer {
                 log.warn("Encountered exception while trying to deserialize record: ", e);
             }
         }
-        consumer.commitSync();
+        this.consumer.commitSync();
         log.info("Done consuming");
         return userMessageList;
     }

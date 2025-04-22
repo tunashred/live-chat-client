@@ -15,14 +15,14 @@ import java.util.Properties;
 @Log4j2
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Producer {
-    KafkaProducer<String, String> kafkaProducer;
+    KafkaProducer<String, String> producer;
 
     public Producer() throws IOException {
         log.info("Initializing producer");
         Properties producerProps = new Properties();
         try (InputStream propsFile = new FileInputStream("src/main/resources/producer.properties")) {
             producerProps.load(propsFile);
-            this.kafkaProducer = new KafkaProducer<>(producerProps);
+            this.producer = new KafkaProducer<>(producerProps);
             log.info("Producer ready");
         }
     }
@@ -36,8 +36,8 @@ public class Producer {
 
             ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", channel, serialized);
 
-            kafkaProducer.send(record);
-            kafkaProducer.flush();
+            this.producer.send(record);
+            this.producer.flush();
             log.trace("Record flushed");
         } catch (IOException e) {
             log.warn("Encountered exception while trying to serialize record: ", e);
