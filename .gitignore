@@ -40,3 +40,5 @@ build/
 
 **/.idea/*
 **/input_messages/*
+**/out/*
+**/META-INF/*
