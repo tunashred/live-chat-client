@@ -34,7 +34,7 @@ public class Consumer {
             consumer.subscribe(Collections.singletonList(channelName));
             Set<TopicPartition> assignments = this.consumer.assignment();
             this.consumer.seekToEnd(assignments);
-            log.info("Consumer initialized and subscribed to group topic '" + channelName + "'");
+            log.info("Consumer" + "'" + username + "'" + "initialized and subscribed to group topic '" + channelName + "'");
         }
     }
 
