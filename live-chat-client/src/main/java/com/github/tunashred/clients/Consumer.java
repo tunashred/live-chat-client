@@ -2,11 +2,12 @@ package com.github.tunashred.clients;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tunashred.dtos.UserMessage;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,13 +17,13 @@ import java.util.*;
 
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 
+@Log4j2
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Consumer {
-    private static final Logger logger = LogManager.getLogger(Consumer.class);
-
     KafkaConsumer<String, String> consumer;
 
     public Consumer(String channelName, String username, Properties properties) throws IOException {
-        logger.info("Initializing consumer");
+        log.info("Initializing consumer");
         Properties consumerProps = new Properties();
         try (InputStream propsFile = new FileInputStream("src/main/resources/consumer.properties")) {
             consumerProps.load(propsFile);
@@ -33,7 +34,7 @@ public class Consumer {
             consumer.subscribe(Collections.singletonList(channelName));
             Set<TopicPartition> assignments = this.consumer.assignment();
             this.consumer.seekToEnd(assignments);
-            logger.info("Consumer initialized and subscribed to group topic '" + channelName + "'");
+            log.info("Consumer initialized and subscribed to group topic '" + channelName + "'");
         }
     }
 
@@ -41,31 +42,23 @@ public class Consumer {
         this(channelName, username, new Properties());
     }
 
-    public static void main(String[] args) throws InterruptedException, IOException {
-        Consumer myConsumer = new Consumer("baia-mare", "gulie");
-        List<UserMessage> userMessageList = myConsumer.consume();
-
-        for (UserMessage userMessage : userMessageList) {
-            System.out.println(userMessage.getUsername() + ": " + userMessage.getMessage());
-        }
-    }
-
     public List<UserMessage> consume() throws RuntimeException {
         List<UserMessage> userMessageList = new ArrayList<>();
 
+        log.trace("Polling");
         ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(300));
         for (var record : consumerRecords) {
+            log.trace("Record to be processed: " + record);
             try {
                 UserMessage userMessage = UserMessage.deserialize(record.value());
-                // had a log trace removed here because it was printing extra dto fields
-                // do we need another log message here then?
 
                 userMessageList.add(userMessage);
             } catch (JsonProcessingException e) {
-                logger.warn("Encountered exception while trying to deserialize record: ", e);
+                log.warn("Encountered exception while trying to deserialize record: ", e);
             }
         }
         consumer.commitSync();
+        log.info("Done consuming");
         return userMessageList;
     }
 }
