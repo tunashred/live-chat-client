@@ -61,4 +61,8 @@ public class Consumer {
         log.trace("Done consuming");
         return userMessageList;
     }
+
+    public void close() {
+        this.consumer.close();
+    }
 }

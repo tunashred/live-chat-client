@@ -49,4 +49,9 @@ public class Producer {
             log.warn("Encountered exception while trying to serialize record: ", e);
         }
     }
+
+    public void close() {
+        this.producer.flush();
+        this.producer.close();
+    }
 }
