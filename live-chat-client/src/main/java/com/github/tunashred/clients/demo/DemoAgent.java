@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
 
+@Deprecated
 public class DemoAgent {
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length != 3) {
@@ -53,10 +54,8 @@ public class DemoAgent {
             Thread.sleep(minDelayMs + rand.nextInt(maxDelayMs - minDelayMs + 1));
         }
 
-        // Simulate thinking pause before erasing
         Thread.sleep(500);
 
-        // Erase the line by moving to start and overwriting with spaces
         System.out.print("\r" + " ".repeat(100) + "\r");
         System.out.flush();
     }

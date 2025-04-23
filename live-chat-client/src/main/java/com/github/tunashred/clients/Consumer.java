@@ -22,6 +22,10 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 public class Consumer {
     KafkaConsumer<String, String> consumer;
 
+    public Consumer(String channelName, String username) throws IOException {
+        this(channelName, username, new Properties());
+    }
+
     public Consumer(String channelName, String username, Properties properties) throws IOException {
         log.info("Initializing consumer");
         Properties consumerProps = new Properties();
@@ -36,10 +40,6 @@ public class Consumer {
             this.consumer.seekToEnd(assignments);
             log.info("Consumer" + "'" + username + "'" + "initialized and subscribed to group topic '" + channelName + "'");
         }
-    }
-
-    public Consumer(String channelName, String username) throws IOException {
-        this(channelName, username, new Properties());
     }
 
     public List<UserMessage> consume() throws RuntimeException {

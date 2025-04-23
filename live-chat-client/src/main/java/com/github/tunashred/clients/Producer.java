@@ -16,12 +16,18 @@ import java.util.Properties;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Producer {
     KafkaProducer<String, String> producer;
+    String DESTINATION_TOPIC = "unsafe_chat";
 
     public Producer() throws IOException {
+        this(new Properties());
+    }
+
+    public Producer(Properties properties) throws IOException {
         log.info("Initializing producer");
         Properties producerProps = new Properties();
         try (InputStream propsFile = new FileInputStream("src/main/resources/producer.properties")) {
             producerProps.load(propsFile);
+            producerProps.putAll(properties);
             this.producer = new KafkaProducer<>(producerProps);
             log.info("Producer ready");
         }
@@ -32,9 +38,9 @@ public class Producer {
         try {
             UserMessage userMessage = new UserMessage(username, message);
             String serialized = UserMessage.serialize(userMessage);
-            log.trace("Serialized user message");
+            log.trace("Serialized user message: " + userMessage);
 
-            ProducerRecord<String, String> record = new ProducerRecord<>("unsafe_chat", channel, serialized);
+            ProducerRecord<String, String> record = new ProducerRecord<>(DESTINATION_TOPIC, channel, serialized);
 
             this.producer.send(record);
             this.producer.flush();
