@@ -58,7 +58,7 @@ public class Consumer {
             }
         }
         this.consumer.commitSync();
-        log.info("Done consuming");
+        log.trace("Done consuming");
         return userMessageList;
     }
 }
