@@ -7,7 +7,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -25,7 +24,7 @@ public class Producer {
     public Producer(Properties properties) throws IOException {
         log.info("Initializing producer");
         Properties producerProps = new Properties();
-        try (InputStream propsFile = new FileInputStream("src/main/resources/producer.properties")) {
+        try (InputStream propsFile = Producer.class.getClassLoader().getResourceAsStream("producer.properties")) {
             producerProps.load(propsFile);
             producerProps.putAll(properties);
             this.producer = new KafkaProducer<>(producerProps);

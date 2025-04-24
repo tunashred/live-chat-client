@@ -29,7 +29,7 @@ public class Consumer {
     public Consumer(String channelName, String username, Properties properties) throws IOException {
         log.info("Initializing consumer");
         Properties consumerProps = new Properties();
-        try (InputStream propsFile = new FileInputStream("src/main/resources/consumer.properties")) {
+        try (InputStream propsFile = Consumer.class.getClassLoader().getResourceAsStream("consumer.properties")) {
             consumerProps.load(propsFile);
             consumerProps.putAll(properties);
             consumerProps.put(GROUP_ID_CONFIG, username + channelName);
