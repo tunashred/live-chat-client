@@ -26,7 +26,6 @@
         <jackson.version>2.16.1</jackson.version>
         <kafka.version>3.7.1</kafka.version>
         <org.apache.logging.log4j.version>2.24.3</org.apache.logging.log4j.version>
-        <junit.version>5.9.2</junit.version>
     </properties>
 
     <dependencies>

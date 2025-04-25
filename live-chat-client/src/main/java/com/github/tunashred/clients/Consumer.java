@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
@@ -27,7 +26,7 @@ public class Consumer {
     }
 
     public Consumer(String channelName, String username, Properties properties) throws IOException {
-        log.info("Initializing consumer");
+        log.trace("Initializing consumer");
         Properties consumerProps = new Properties();
         try (InputStream propsFile = Consumer.class.getClassLoader().getResourceAsStream("consumer.properties")) {
             consumerProps.load(propsFile);
@@ -38,7 +37,7 @@ public class Consumer {
             this.consumer.subscribe(Collections.singletonList(channelName));
             Set<TopicPartition> assignments = this.consumer.assignment();
             this.consumer.seekToEnd(assignments);
-            log.info("Consumer '" + username + "' initialized and subscribed to group topic '" + channelName + "'");
+            log.info("Consumer '{}' initialized and subscribed to group topic '{}'", username, channelName);
         }
     }
 
@@ -51,8 +50,8 @@ public class Consumer {
             log.trace("Record to be processed: " + record);
             try {
                 UserMessage userMessage = UserMessage.deserialize(record.value());
-
                 userMessageList.add(userMessage);
+                log.trace("Consumed message: {}", userMessage);
             } catch (JsonProcessingException e) {
                 log.warn("Encountered exception while trying to deserialize record: ", e);
             }
