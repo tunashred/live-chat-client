@@ -14,7 +14,7 @@ import java.util.Properties;
 @Log4j2
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Producer {
-    static String DESTINATION_TOPIC = "unsafe_chat";
+    static String DESTINATION_TOPIC = "unsafe-chat";
     KafkaProducer<String, String> producer;
 
     public Producer() throws IOException {
