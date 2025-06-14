@@ -4,13 +4,16 @@ import com.github.tunashred.clients.Consumer;
 import com.github.tunashred.clients.Producer;
 import com.github.tunashred.dtos.UserMessage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
-@Deprecated
+//@Deprecated
 public class DemoAgent {
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length != 3) {
@@ -24,9 +27,33 @@ public class DemoAgent {
 
         List<String> messages = Files.readAllLines(Paths.get(filePath));
         Random random = new Random();
+        int maxDelay = random.nextInt(4000);
 
-        Producer producer = new Producer();
-        Consumer consumer = new Consumer(channelName, username);
+        Properties securityProps = new Properties();
+        try (InputStream inputStream = new FileInputStream("src/main/resources/security.properties")) {
+            securityProps.load(inputStream);
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+
+        Properties consumerProps = new Properties();
+        try (InputStream inputStream = new FileInputStream("src/main/resources/consumer.properties")) {
+            consumerProps.load(inputStream);
+            consumerProps.putAll(securityProps);
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+
+        Properties producerProps = new Properties();
+        try (InputStream inputStream = new FileInputStream("src/main/resources/producer.properties")) {
+            producerProps.load(inputStream);
+            producerProps.putAll(securityProps);
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+
+        Producer producer = new Producer(producerProps);
+        Consumer consumer = new Consumer(channelName, username, consumerProps);
         consumer.consume();
 
         while (true) {
@@ -34,7 +61,7 @@ public class DemoAgent {
                 simulateTypingAndErase(message, 30, 80);
                 producer.sendMessage(channelName, username, message);
 
-                int delay = 1000 + random.nextInt(4000);
+                int delay = 500 + random.nextInt(maxDelay);
                 Thread.sleep(delay);
                 printMessages(consumer.consume());
             }
